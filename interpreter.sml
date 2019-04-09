@@ -91,11 +91,6 @@ struct
   (* Generate a list of monsters *)
   fun dungeon n = List.tabulate (n, fn i => genMonster ())
 
-  (* Example ideas: 
-  * - hearthstone cards 
-  * - Tracery stories
-  *
-  * *)
 
   (* Tracery Stories *)
   val they = TBase (TString ["they"])
@@ -135,5 +130,14 @@ struct
     ^ (projStr heroPronouns "their") ^ " sword, and fought the beast who faced "
     ^ (projStr heroPronouns "them") ^ "."
   end
+
+  (* Later example ideas: 
+  * - hearthstone cards 
+  * - Tracery nested stories
+  * - 2D grid mazes
+  * - 2D tile game levels (pac man, sokoban?)
+  * - nethack dungeons
+  * *)
+
 
 end
