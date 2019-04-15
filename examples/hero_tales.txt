@@ -1,0 +1,50 @@
+type pronoun_set = AND {they: string, them: string, their: string}
+
+they_pronouns : pronoun_set = AND {they: "they", them: "them", their: "their"}
+she_pronouns : pronoun_set = AND {they: "she", them: "her", their: "her"}
+
+pronouns : pronoun_set = OR {they_pronouns, she_pronouns}
+
+name = OR {"Kai", "Sara", "Vee", "Zee", "Dora", "Meera", "Vanya"}
+
+story =
+  LET {
+    heroName: name, 
+    pronouns: pronouns,
+    SEQ {
+      "Our hero ", heroName, " went into the dungeon to find treasure.",
+      pronouns.they, " descended into the final cave, drew ",
+      pronouns.their, " sword, and fought the beast who faced ",
+      pronouns.them, "."}
+  }
+
+
+# Example involving rolling dice to take damage; end story when one dead
+
+attack(name, pronouns) =
+  SEQ {name, " draws ", pronouns.their, " sword, and attacks for ",
+        range(1,3), " damage.", 
+
+story =
+  LET {
+    monsterHP: range(5,7),
+    heroHP: range(6,10),
+    heroName: name,
+    pronouns: pronouns,
+    monsterType: monsterType,
+    turn = OR {"hero", "monster"},
+    SEQ {
+      case turn {
+        "hero":
+          OR { attack(heroName, pronouns), defend(heroName, pronouns) },
+        "monster":
+          OR { attack(monsterType, theyPronouns), defend(monsterType,
+          theyPronouns) }
+      }, 
+      # XXX - state change - how to declare winner/loser?
+      loser,
+      " is dead. ",
+      winner,
+      " is victorious!"
+    }
+  }

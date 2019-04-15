@@ -1,0 +1,8 @@
+monsterType = OR {"zombie", "werewolf", "orc"}
+
+strongRange = OR range(5,9)
+weakRange = OR range(1,4)
+
+monster = AND {type: monsterType, damage: OR {strongRange, weakRange}}
+
+

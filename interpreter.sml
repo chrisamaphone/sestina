@@ -126,7 +126,7 @@ struct
     val heroPronouns = genPronouns ()
   in
     "Our hero went into the dungeons to find the treasure. "
-    ^ (projStr heroPronouns "they") ^ " descended into the final gave, drew "
+    ^ (projStr heroPronouns "they") ^ " descended into the final cave, drew "
     ^ (projStr heroPronouns "their") ^ " sword, and fought the beast who faced "
     ^ (projStr heroPronouns "them") ^ "."
   end
