@@ -6,5 +6,5 @@ Tinkering with creating a functional programming language for procedural content
 To run:
 - Install [SML/NJ](https://www.smlnj.org/)
 - Run ``rlwrap sml`` in the repo directory
-- Type ``use "interpreter.sml;``
+- Type ``use "interpreter.sml";``
 - Type ``Interpreter.<fn>`` to access functions
