@@ -2,16 +2,17 @@ type pronoun_set = AND {they: string, them: string, their: string}
 
 they_pronouns : pronoun_set = AND {they: "they", them: "them", their: "their"}
 she_pronouns : pronoun_set = AND {they: "she", them: "her", their: "her"}
+he_pronouns : pronoun_set = AND {they: "he", them: "him", their: "his"}
 
-pronouns : pronoun_set = OR {they_pronouns, she_pronouns}
+pronouns : pronoun_set = OR {they_pronouns, she_pronouns, he_pronouns}
 
-name = OR {"Kai", "Sara", "Vee", "Zee", "Dora", "Meera", "Vanya"}
+name = OR {"Robin", "Ash", "Casey", "Kris", "Alex", "Riley", "Taylor"}
 
-story =
-  LET {
-    heroName: name, 
-    pronouns: pronouns,
-    SEQ {
+story : string =
+  LETGEN {
+    heroName : name, 
+    pronouns : pronouns,
+    CONCAT {
       "Our hero ", heroName, " went into the dungeon to find treasure.",
       pronouns.they, " descended into the final cave, drew ",
       pronouns.their, " sword, and fought the beast who faced ",
@@ -22,18 +23,26 @@ story =
 # Example involving rolling dice to take damage; end story when one dead
 
 attack(name, pronouns) =
-  SEQ {name, " draws ", pronouns.their, " sword, and attacks for ",
-        range(1,3), " damage.", 
+  LETGEN {
+    damage : range(1,3),
+    LET {
+      dmg = Int.toString damage,
+      CONCAT {
+        name, " draws ", pronouns.their, " sword, and attacks for ",
+        dmg, " damage."
+      }
+    }
+  }
 
 story =
-  LET {
+  LETGEN {
     monsterHP: range(5,7),
     heroHP: range(6,10),
     heroName: name,
     pronouns: pronouns,
     monsterType: monsterType,
-    turn = OR {"hero", "monster"},
-    SEQ {
+    turn : OR {"hero", "monster"},
+    CONCAT {
       case turn {
         "hero":
           OR { attack(heroName, pronouns), defend(heroName, pronouns) },
@@ -41,7 +50,6 @@ story =
           OR { attack(monsterType, theyPronouns), defend(monsterType,
           theyPronouns) }
       }, 
-      # XXX - state change - how to declare winner/loser?
       loser,
       " is dead. ",
       winner,

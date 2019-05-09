@@ -1,0 +1,50 @@
+
+gentype suit = OR {"pentacles", "cups", "swords", "wands"}
+gentype numeric_ranks = range(2,10)
+
+gentype rank = OR {"ace", tmap toString numeric_ranks, "page", "knight",
+"queen", "king"}
+
+gentype minor = AND {Suit: suit, Rank: rank}
+
+gentype major = OR {"fool", "magician", "strength", "world", "chariot", "high
+priestess", "tower", "sun", "star", "moon", "justice", "hermit"} (* etc *)
+
+
+type card = OR {Min: minor, Maj: major}
+
+val draw =
+  LETGEN {
+    c : card,
+    case c of
+      Min {Suit, Rank} => ...
+    | Maj {c} => ...
+
+(* draw/sample without putting a card back? *)
+
+(* Primitive for shuffling: turn any gentype into a random stream
+    shuffle : t:gentype => (unit -> t option)
+*)
+
+
+val draw = shuffle card
+
+(* Turn a finite type into a list *)
+in
+ fun addAll () =
+  case draw() of
+    SOME c => c::(addAll ())
+  | NONE => []
+end
+
+val cards : card list = addAll ()
+
+(* Alternatively, draw one at a time *)
+
+fun drawN n =
+  case n of 
+    0 => []
+  | _ => case draw() of
+          SOME c => c::(drawN (n-1))
+          | NONE => []
+

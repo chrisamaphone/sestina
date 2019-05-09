@@ -1,8 +1,22 @@
-monsterType = OR {"zombie", "werewolf", "orc"}
+monsterType = OR {"direwolf", "dragon", "vampire"}
 
 strongRange = OR range(5,9)
 weakRange = OR range(1,4)
 
-monster = AND {type: monsterType, damage: OR {strongRange, weakRange}}
+monster = OR {Weak    : AND {type: monsterType, damage: weakRange},
+              Strong  : AND {type: monsterType, damage: strongRange}}
 
+let (t, d) =
+  case monster of
+    Weak {type, damage} => (type, damage)
+  | Strong {type, damage} => (type, damage)
+in
+  case t of
+      "direwolf" => ... (* frost damage *)
+    | "dragon" => ... (* fire damage *)
+    | "vampire" => ... (* blood damage *)
+
+case monster of
+  Weak {type, damage} => 
+    case damage of (1 => ... | ... | 4 => ...) (* should have coverage *)
 
