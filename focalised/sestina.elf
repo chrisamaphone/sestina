@@ -1,0 +1,68 @@
+base : type.
+arb : base.
+
+ty+ : type.
+t1    : ty+.
+tprod : ty+ -> ty+ -> ty+.
+tsum  : ty+ -> ty+ -> ty+.
+tbase : base -> ty+.
+
+base_value : base -> type.
+bv : base_value arb.
+
+% values: inhabitants of positive types
+value : ty+ -> type.
+unit : value t1.
+pair : value A -> value B -> value (tprod A B).
+inl  : value A -> value (tsum A B).
+inr  : value B -> value (tsum A B).
+vbase : base_value P -> value (tbase P).
+
+% analogous to left rules of sequent calculus
+trans : ty+ -> ty+ -> type.
+ignore : value C -> trans t1 C.  % could be "trans A C" in general
+split : (value A -> trans B C) -> trans (tprod A B) C.
+case : trans A C -> trans B C -> trans (tsum A B) C.
+% case : (value A -> value C) -> (value B -> value C) 
+%        -> trans (tsum A B) C.
+id : trans A A.
+seq : trans A B -> trans B C -> trans A C.
+bind : (value A -> value B) -> trans A B.
+
+
+% eval
+eval : value T -> trans T C -> value C -> type.
+%mode eval +Value +Trans -Value2.
+eval/split
+  : eval (pair V1 V2) (split Cont) V
+    <- eval V2 (Cont V1) V.
+eval/ignore
+  : eval unit (ignore V) V.
+eval/case/inl
+  : eval (inl V1) (case T1 T2) V
+  <- eval V1 T1 V.
+eval/case/inr
+  : eval (inr V2) (case T1 T2) V
+  <- eval V2 T2 V.
+eval/bind
+  : eval V (bind ([x] V' x)) (V' V).
+
+
+a : base.
+b : base.
+c : base.
+
+a_val : base_value a.
+b_val : base_value b.
+c_val : base_value c.
+
+example1 : trans 
+               (tprod (tbase a) (tsum (tbase b) (tbase c))) 
+               (tsum (tprod (tbase a) (tbase b)) (tbase c)).
+example1 = split ([x] case (bind [z] inl (pair x z)) (bind [w] inr w)).
+example1_in = pair (vbase a_val) (inl (vbase b_val)).
+
+%solve example_eval : eval example1_in example1 Out.
+
+
+
